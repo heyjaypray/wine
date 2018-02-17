@@ -1,0 +1,125 @@
+<div class="container-fluid">
+
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4 text-center">Let's Drink Some Wine, Shall We?</h1>
+
+        </div>
+    </div>
+
+    <div class="row mb-5 border">
+        <div class="col">
+
+        </div>
+        <div class="col">
+            <center>
+
+                <form>
+                    <div>
+                        <label>What kind of wine would you like?</label>
+                        <input id="drink-input">
+                        <button type="submit" id="insert">Submit</button>
+                    </div>
+                </form>
+
+            </center>
+        </div>
+        <div class="col">
+
+        </div>
+    </div>
+
+
+    <div class="row border">
+        <div class="col border">
+            <center>
+                <ul style="list-style: none;">
+                    <h2>Currently Drinking</h2>
+                    {{#each wine}} {{#unless drank}}
+                    <li>
+                        <p>{{this.wine_name}}</p>
+
+                        <button data-id="{{this.id}}" class="drank">Drink</button>
+                    </li>
+                    {{/unless}} {{/each}}
+                </ul>
+            </center>
+
+        </div>
+        <div class="col border">
+            <center>
+                <h2 class="text-center">Drinks You've Had</h2>
+                <ul style="list-style: none;">
+                    {{#each wine}}{{#if drank}}
+
+                    <li>
+                        <p>{{this.wine_name}}</p>
+                    </li>
+
+                    {{/if}} {{/each}}
+                </ul>
+            </center>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <script type="text/javascript">
+
+        function validateForm() {
+
+            var formIsValid = true;
+            if ($('#drink-input').val() === "") {
+                formIsValid = false;
+            }
+            return formIsValid;
+        }
+        // When order button clicked, new order displayed
+        $("#insert").on("click", function (event) {
+
+            event.preventDefault();
+            if (validateForm()) {
+                var newDrink = {
+                    wine_name: $("#drink-input").val().trim(),
+                    drank: 0
+                };
+
+                $('#drink-input').val('');
+                // Send the POST request
+                $.ajax('api/wine', {
+                    type: 'POST',
+                    data: newDrink
+                }).then(
+                    function () {
+                        // Reload the page to get the updated list
+                        location.reload();
+                    }
+                );
+            } else {
+                alert('You need to enter your order first!');
+            }
+        });
+        // When devour button clicked, order transfered to the devoured list
+        $('.drank').on('click', function () {
+            var id = $(this).data('id');
+            var drankSt = {
+                drank: 1
+            }
+            $.ajax('api/wine/' + id, {
+                type: 'PUT',
+                data: drankSt
+            }).then(function () {
+                // Reload the page to get the updated list
+                location.reload();
+            });
+        });
+
+    </script>
