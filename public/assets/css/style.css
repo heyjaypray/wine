@@ -1,0 +1,10 @@
+html, body {
+    background-position: center;
+    background-size: cover;
+    background-image: url('../img/wine.jpg')
+}
+
+.row-1, .jumbotron {
+    opacity: 0.8;
+}
+
